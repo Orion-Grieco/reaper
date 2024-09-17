@@ -12,32 +12,33 @@ as the contents of the repository itself.
 The projects runs on systems with `python3`. There are a number of python
 libraries that the code needs in order to execute. To install them, simply run
 `pip install -r requirements.txt` (or `pip3` if your system does not have python3 set
-as the default.)
+as the default).
 
 ## Interface
 
-The main interface that should be used to run reaper is the Python script called 
-`batch_score.py`. This script should be called with a set of parameters that 
+The main interface that should be used to run reaper is the Python script called
+`batch_score.py`. This script should be called with a set of parameters that
 specify where the datasource can be found, what projects need to be analyzed,
-etc. 
+etc.
 
-Additionally there is a script called `score_repo.py`, however at the moment it 
-is outdated and cannot be used to score repos. 
+Additionally there is a script called `score_repo.py`, however at the moment it
+is outdated and cannot be used to score repos.
 
 ### Usage
 
-`batch_score.py` can be called as follows: 
+`batch_score.py` can be called as follows:
 
 `batch_score.py -c <config> -r <repos_path> -m <manifest> -s <sample_file>`
 
 Where:
+
 * `<config>`: Is an instance of `config.json`.
-* `<repos_path>`: Is the path to a directory where reaper can check out the 
-source files of a project. 
-* `<manifest>`: Is an instance of `manifest.json` (which can be found in this 
-repository) containing information on what attributes should be executed.
-* `<sample_file>`: A list of GHTorrent project ids that should be analyzed, 
-newline seperated. 
+* `<repos_path>`: Is the path to a directory where reaper can check out the
+  source files of a project.
+* `<manifest>`: Is an instance of `manifest.json` (which can be found in this
+  repository) containing information on what attributes should be executed.
+* `<sample_file>`: A list of GHTorrent project ids that should be analyzed,
+  newline seperated.
 
 ### config.json
 
@@ -46,12 +47,12 @@ are two high level keys that can be altered, `options` and `attributes`.
 
 #### `options`
 
-| Key | Values | Description |
-| --- |:------:| -----------:|
-| `threshold` | Positive Numbers | Defines the threshold by which the system considers a repository to contain a software project. |
-| `persistResult` | true or false | Whether the granular results should be saved to the specified datasource. |
-| `datasource` | object | Settings for connecting to the GHTorrent database, see description below. |
-| `github_tokens` | list | List of GitHub OAuth tokens to be used for authentication for rate limiting purposes. |
+| Key               |      Values      |                                                                                     Description |
+| ----------------- | :--------------: | ----------------------------------------------------------------------------------------------: |
+| `threshold`     | Positive Numbers | Defines the threshold by which the system considers a repository to contain a software project. |
+| `persistResult` |  true or false  |                       Whether the granular results should be saved to the specified datasource. |
+| `datasource`    |      object      |                       Settings for connecting to the GHTorrent database, see description below. |
+| `github_tokens` |       list       |           List of GitHub OAuth tokens to be used for authentication for rate limiting purposes. |
 
 ##### `datasource`
 
@@ -65,10 +66,10 @@ edit the appropriate parameters under the `options => datasource` key.
 
 #### `peristResult`
 
-If persist results is enabled a database table needs to exist to which reaper can 
-write results. This table should be named `reaper_results` and should contain at 
-least a column for project ids named `project_id`, and a column to store the score 
-for a repository named `score`. Additionally, there should be a column for every 
+If persist results is enabled a database table needs to exist to which reaper can
+write results. This table should be named `reaper_results` and should contain at
+least a column for project ids named `project_id`, and a column to store the score
+for a repository named `score`. Additionally, there should be a column for every
 attribute that you want to store.
 
 For instance, to create this table in MySQL the following table create statement
