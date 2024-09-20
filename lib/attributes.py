@@ -1,4 +1,4 @@
-import distutils.spawn
+#import distutils.spawn
 import importlib
 import multiprocessing
 import os
@@ -69,9 +69,8 @@ class Attributes(object):
                 raise Exception(
                     'Missing dependencies must be installed to continue.'
                 )
-
             self.database.connect()
-            for attribute in self.attributes:
+            for attribute in self.attributes: # type: ignore
                 if hasattr(attribute.reference, 'global_init'):
                     with self.database.cursor() as cursor:
                         attribute.reference.global_init(cursor, samples)
@@ -92,7 +91,7 @@ class Attributes(object):
                     project_id, repository_home
                 )
 
-            for attribute in self.attributes:
+            for attribute in self.attributes: # type: ignore
                 bresult = False
                 rresult = None
 
@@ -138,7 +137,7 @@ class Attributes(object):
             return rresults
 
     def get(self, name):
-        for attribute in self.attributes:
+        for attribute in self.attributes: # type: ignore
             if attribute.name == name:
                 return attribute
 
@@ -260,7 +259,7 @@ class Attributes(object):
         for attribute in self.attributes:
             if attribute.enabled and attribute.dependencies:
                 for dependency in attribute.dependencies:
-                    if not distutils.spawn.find_executable(dependency):
+                    if not shutil.which(dependency):
                         sys.stderr.write(
                             '[{0}] Dependency {1} missing\n'.format(
                                 attribute.name, dependency

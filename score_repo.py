@@ -23,37 +23,35 @@ def process_arguments():
     Returns:
         Dictionary of parsed commandline arguments.
     """
-    parser = argparse.ArgumentParser(
-        description='Calculate the score of a repository.'
+    parser = argparse.ArgumentParser(description="Calculate the score of a repository.")
+    parser.add_argument(
+        "-c",
+        "--config",
+        type=argparse.FileType("r"),
+        default="config.json",
+        dest="config_file",
+        help="Path to the configuration file.",
     )
     parser.add_argument(
-        '-c',
-        '--config',
-        type=argparse.FileType('r'),
-        default='config.json',
-        dest='config_file',
-        help='Path to the configuration file.'
-    )
-    parser.add_argument(
-        '-p',
-        '--plugins',
+        "-p",
+        "--plugins",
         type=is_dir,
-        default='attributes',
-        dest='plugins_dir',
-        help='Path to the folder containing your set of attribute plugins.'
+        default="attributes",
+        dest="plugins_dir",
+        help="Path to the folder containing your set of attribute plugins.",
     )
     parser.add_argument(
-        'repository_id',
+        "repository_id",
         type=int,
         nargs=1,
-        help='Identifier for a project as it appears in the \
-              GHTorrent database.'
+        help="Identifier for a project as it appears in the \
+              GHTorrent database.",
     )
     parser.add_argument(
-        'repository_path',
+        "repository_path",
         type=is_dir,
         nargs=1,
-        help='Path to the repository source code.'
+        help="Path to the repository source code.",
     )
 
     if len(sys.argv) < 2:
@@ -69,19 +67,16 @@ def main():
     """
     args = process_arguments()
     config = process_configuration(args.config_file)
-    connection = establish_database_connection(config['options']['datasource'])
-    attributes = config['attributes']
+    connection = establish_database_connection(config["options"]["datasource"])
+    attributes = config["attributes"]
     load_attribute_plugins(args.plugins_dir, attributes)
     init_attribute_plugins(attributes, connection)
 
     score, results = process_repository(
-        args.repository_id[0],
-        args.repository_path[0],
-        attributes,
-        connection
+        args.repository_id[0], args.repository_path[0], attributes, connection
     )
 
-    if config['options'].get('persistResult', False):
+    if config["options"].get("persistResult", False):
         cursor = connection.cursor()
 
         run_id = get_run_id()
@@ -89,11 +84,11 @@ def main():
 
         cursor.close()
 
-        print('\rResult saved to datasource.')
+        print("\rResult saved to datasource.")
     else:
-        print('\rRaw score: {0}'.format(score))
+        print("\rRaw score: {0}".format(score))
 
-        if 'DEBUG' in os.environ:
+        if "DEBUG" in os.environ:
             print(results)
 
     connection.close()
@@ -101,12 +96,13 @@ def main():
 
 def spin(stop_condition):
     while not stop_condition:
-        print(chr(random.randint(int('2800', 16), int('2880', 16))), end='')
+        print(chr(random.randint(int("2800", 16), int("2880", 16))), end="")
         sys.stdout.flush()
-        print('\b', end='')
+        print("\b", end="")
         time.sleep(0.1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     stop_condition = False
     spinner_thread = threading.Thread(target=spin, args=([stop_condition]))
     spinner_thread.daemon = True
@@ -114,6 +110,6 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print('\rCaught interrupt, exiting.')
+        print("\rCaught interrupt, exiting.")
     finally:
         stop_condition = True
